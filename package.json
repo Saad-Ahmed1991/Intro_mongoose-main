@@ -1,0 +1,24 @@
+{
+  "name": "mern",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd backend && npm run back\" \"cd client && npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdelhafidhbensalem/Intro_mongoose.git"
+  },
+  "author": "abs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abdelhafidhbensalem/Intro_mongoose/issues"
+  },
+  "homepage": "https://github.com/Abdelhafidhbensalem/Intro_mongoose#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0",
+    "express-validator": "^6.14.2"
+  }
+}
