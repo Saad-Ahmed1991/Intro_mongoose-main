@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
   createdOn: { type: Date, default: new Date() },
   qte: Number,
   imageSrc: { type: String },
-  //user: { type: mongoose.Schema.Types.ObjectId } à faire
+  user: { type: mongoose.Schema.Types.ObjectId },
 });
 
 module.exports = Product = mongoose.model("product", productSchema);

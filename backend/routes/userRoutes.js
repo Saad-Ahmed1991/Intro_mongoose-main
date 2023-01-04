@@ -1,10 +1,14 @@
 const express = require("express");
-const { getAll } = require("../controllers/userControllers");
-const checkName = require("../middlewares/checkName");
-const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { check, validationResult } = require("express-validator");
+const { getAll } = require("../controllers/userControllers");
+const User = require("../models/User");
+const {
+  registerRules,
+  validator,
+  logInRules,
+} = require("../middlewares/validator");
+const isAuth = require("../middlewares/isAuth");
 
 const router = express.Router();
 
@@ -17,47 +21,35 @@ router.get("/", getAll);
 
 //create new User  ==> inscrit
 
-router.post(
-  "/register",
-  check("email", "this field should be a valid email").isEmail(),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(400).send({ errors: errors.array() });
-    } else {
-      next();
+router.post("/register", registerRules(), validator, async (req, res) => {
+  const { email, password, role } = req.body;
+  try {
+    //req.body=={name:"xx",age...}
+    //console.log(req.body)
+    if (role == "admin" || role == "superAdmin") {
+      return res.status(401).send({ msg: "unauthorized" });
     }
-  },
-  async (req, res) => {
-    const { email, password, role } = req.body;
-    try {
-      //req.body=={name:"xx",age...}
-      //console.log(req.body)
-      if (role == "admin" || role == "superAdmin") {
-        return res.status(401).send({ msg: "unauthorized" });
-      }
-      const searchedUser = await User.findOne({ email });
-      if (searchedUser) {
-        return res
-          .status(400)
-          .send({ msg: "User already exisit, please log in" });
-      }
+    const searchedUser = await User.findOne({ email });
+    if (searchedUser) {
+      return res
+        .status(400)
+        .send({ msg: "User already exisit, please log in" });
+    }
 
-      const newUser = new User(req.body);
-      const hashedPassword = await bcrypt.hash(password, 10);
-      newUser.password = hashedPassword;
-      await newUser.save();
-      res.send({ msg: "user added successfully", newUser });
-    } catch (error) {
-      console.log(error);
-      res.end();
-    }
+    const newUser = new User(req.body);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    newUser.password = hashedPassword;
+    await newUser.save();
+    res.send({ msg: "user added successfully", newUser });
+  } catch (error) {
+    console.log(error);
+    res.end();
   }
-);
+});
 
 //log in user
 
-router.post("/login", async (req, res) => {
+router.post("/login", logInRules(), validator, async (req, res) => {
   const { email, password } = req.body;
   try {
     const existUser = await User.findOne({ email });
@@ -88,6 +80,10 @@ router.delete("/:idDelete", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
+
+router.get("/current", isAuth(), async (req, res) => {
+  res.send({ user: req.user });
 });
 
 module.exports = router;
