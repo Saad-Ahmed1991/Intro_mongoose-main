@@ -10,12 +10,16 @@ import Filter from "./components/Filter/Filter";
 import EditProduct from "./components/EditProduct/EditProduct";
 import SignUp from "./components/SignUp/SignUp";
 import SignIn from "./components/SignIn/SignIn";
+import DashBoard from "./components/DashBoard/DashBoard";
+import { getCurrentUser } from "./redux/actions/actionsUser";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getAllProducts());
+    dispatch(getCurrentUser());
   }, []);
 
   return (
@@ -35,9 +39,10 @@ function App() {
           path="/add"
           element={
             <>
-              {" "}
-              <NavBar />
-              <AddProduct />
+              <PrivateRoute>
+                <NavBar />
+                <AddProduct />
+              </PrivateRoute>
             </>
           }
         />
@@ -45,7 +50,6 @@ function App() {
           path="/edit/:id"
           element={
             <>
-              {" "}
               <NavBar />
               <EditProduct />
             </>
@@ -53,6 +57,14 @@ function App() {
         />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <DashBoard />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </div>
   );

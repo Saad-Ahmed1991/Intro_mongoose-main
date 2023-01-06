@@ -12,17 +12,16 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { logOut } from "../../redux/actions/actionsUser";
+import { useDispatch } from "react-redux";
 
 const pages = ["Products", <NavLink to="/add">Add</NavLink>, "Blog"];
-const settings = [
-  "Profile",
-  "Account",
-  "Dashboard",
-  <NavLink to="/signin">Sign in</NavLink>,
-];
+const settings = ["Profile", "Account", "Dashboard", "Sign In"];
 
 function NavBar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -153,11 +152,30 @@ function NavBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              {settings.map((setting) =>
+                setting == "Sign In" ? (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">
+                      {localStorage.getItem("token") ? (
+                        <span
+                          onClick={() => {
+                            dispatch(logOut());
+                            navigate("/signin");
+                          }}
+                        >
+                          log out
+                        </span>
+                      ) : (
+                        <NavLink to="/signin">{setting}</NavLink>
+                      )}
+                    </Typography>
+                  </MenuItem>
+                ) : (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                )
+              )}
             </Menu>
           </Box>
         </Toolbar>

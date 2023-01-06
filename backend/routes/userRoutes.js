@@ -40,7 +40,7 @@ router.post("/register", registerRules(), validator, async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     newUser.password = hashedPassword;
     await newUser.save();
-    res.send({ msg: "user added successfully", newUser });
+    res.send({ msg: "user added successfully" });
   } catch (error) {
     console.log(error);
     res.end();
