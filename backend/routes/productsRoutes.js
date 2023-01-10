@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
     const allProducts = await Product.find({
       category: { $regex: cat },
       name: { $regex: name, $options: "i" },
-    });
+    }).populate("user", "name email");
     res.send({ products: allProducts });
   } catch (error) {
     console.log(error);
@@ -55,7 +55,7 @@ router.post(
 
 //update product
 
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id", isAuth(), isAdmin, async (req, res) => {
   try {
     /*method 1
         let searchedProduct = await Product.findOne({ _id: req.params.id })

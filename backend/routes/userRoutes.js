@@ -60,6 +60,9 @@ router.post("/login", logInRules(), validator, async (req, res) => {
     if (!matched) {
       return res.status(400).send({ msg: "incorrect email or password" });
     }
+    if (existUser.isBanned) {
+      return res.status(400).send({ msg: "user banned, please contact admin" });
+    }
     existUser.password = undefined;
     //console.log(existUser);
     const payload = { _id: existUser._id };

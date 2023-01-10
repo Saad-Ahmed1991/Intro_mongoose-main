@@ -51,6 +51,7 @@ axios.post(url, {
 
 export const getCurrentUser = () => async (dispatch) => {
   const token = localStorage.getItem("token");
+  dispatch({ type: "LOADING_USER" });
   try {
     const response = await axios.get("http://localhost:5000/api/user/current", {
       headers: {

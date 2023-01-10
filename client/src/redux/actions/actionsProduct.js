@@ -60,9 +60,11 @@ export const addProduct = (newProduct, navigate) => async (dispatch) => {
 };
 
 export const deleteProduct = (id) => async (dispatch) => {
+  const token = localStorage.getItem("token");
   try {
     const response = await axios.delete(
-      `http://localhost:5000/api/product/delete/${id}`
+      `http://localhost:5000/api/product/delete/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
     );
     dispatch({ type: DELETE_PRODUCT_SUCCESS });
     dispatch(getAllProducts());
@@ -88,10 +90,12 @@ export const getOneProduct = (id) => async (dispatch) => {
 // Update one Product
 export const editProduct =
   (id, updatedProduct, navigate) => async (dispatch) => {
+    const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
         `http://localhost:5000/api/product/update/${id}`,
-        updatedProduct
+        updatedProduct,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       dispatch({ type: EDIT_PRODUCT_SUCCESS, payload: response.data });
       dispatch(getAllProducts());

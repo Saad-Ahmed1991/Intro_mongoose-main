@@ -13,6 +13,7 @@ import SignIn from "./components/SignIn/SignIn";
 import DashBoard from "./components/DashBoard/DashBoard";
 import { getCurrentUser } from "./redux/actions/actionsUser";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import ProtectedRoute from "./components/ProtecetedRoute/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -49,10 +50,10 @@ function App() {
         <Route
           path="/edit/:id"
           element={
-            <>
+            <ProtectedRoute>
               <NavBar />
               <EditProduct />
-            </>
+            </ProtectedRoute>
           }
         />
         <Route path="/signup" element={<SignUp />} />

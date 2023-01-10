@@ -1,6 +1,7 @@
 import {
   GET_CURRENT_USER_FAIL,
   GET_CURRENT_USER_SUCCESS,
+  LOADING_USER,
   LOG_OUT,
   SIGN_IN_FAIL,
   SIGN_IN_SUCCESS,
@@ -11,6 +12,7 @@ import {
 const inittialState = {
   errors: null,
   currentUser: {},
+  loading: false,
 };
 
 export const userReducer = (state = inittialState, { type, payload }) => {
@@ -22,10 +24,12 @@ export const userReducer = (state = inittialState, { type, payload }) => {
       return { ...state, currentUser: payload.user };
     case SIGN_IN_FAIL:
       return { ...state, errors: payload };
+    case LOADING_USER:
+      return { ...state, loading: true };
     case GET_CURRENT_USER_SUCCESS:
-      return { ...state, currentUser: payload.user };
+      return { ...state, currentUser: payload.user, loading: false };
     case GET_CURRENT_USER_FAIL:
-      return { ...state, errors: payload };
+      return { ...state, errors: payload, loading: false };
     case LOG_OUT:
       localStorage.removeItem("token");
       return {
